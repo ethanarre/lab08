@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+    <style>
+        header{
+            background-color: black;
+            margin-bottom: 10px;
+        }
+        div button{
+            margin:5px
+        }
+        .body{
+            width: 50%;
+            margin: auto;
+        }
+        table{
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <header class="p-3 text-bg-dark">
+            <div class="container">
+                <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                    <h3>Laboratorio 08 - Arredondo</h3>
+                    <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" method="get">
+                        <input type="search" name="q" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search" value="{{ query }}">
+                        <button type="submit">Buscar</button>
+                    </form>
+                                      
+                </div>
+            </div>
+        </header>
+    </div>
+    <div class="body">
+        <div>
+            <div>
+                <table border="1">
+                    <tr>
+                        <th>Libro</th>
+                        <th>Cliente</th>
+                        <th>Inicio</th>
+                        <th>Fin</th>
+                        <th>Acciones</th>
+                    </tr>
+                    {% for prestamo in Prestamos %}
+                    <tr>
+                        <td>{{ prestamo.libro_id }}</td> <!-- Accede al campo 'titulo' del modelo Libro -->
+                        <td>{{ prestamo.usuario_id }}</td> 
+                        <td>{{ prestamo.FecPrestamo }}</td>
+                        <td>{{ prestamo.FecDevolucion }}</td>
+                        <td>
+                            <form method="post" action="{% url 'web:finalizar_prestamo' prestamo_id=prestamo.id %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success">Finalizar</button>
+                            </form>
+                            <form method="post" action="{% url 'web:eliminar_prestamo' prestamo_id=prestamo.id %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                            </form>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editarModal{{ prestamo.id }}">
+                                Editar
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                {% if query %}
+                    <!-- Muestra un mensaje si se realiza una búsqueda -->
+                    <p>Resultados de la búsqueda para: {{ query }}</p>
+                {% endif %}
+                </table>
+            </div>
+            <div>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#nuevoPrestamo">
+                    Nuevo Prestamo
+                </button>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+    <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+{% include 'modals.html' %}
+</body>
+</html>
